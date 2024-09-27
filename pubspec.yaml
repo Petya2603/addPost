@@ -1,0 +1,48 @@
+name: addpost
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8 
+  firebase_core: 
+  get: ^4.6.6
+  cloud_firestore: 
+  extended_image: ^8.2.4 
+  flutter_svg: ^2.0.10+1 
+  flick_video_player: ^0.5.0
+  audioplayers: ^5.1.0
+  lottie: ^3.1.2
+  flutter_launcher_icons: ^0.14.1
+  video_player: ^2.9.1
+
+flutter_launcher_icons:
+  image_path: "assets/images/logo1.png" 
+  android: true
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: Gilroy
+      fonts:
+        - asset: assets/font/Gilroy-Bold.ttf
