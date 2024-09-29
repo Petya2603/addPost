@@ -1,7 +1,7 @@
 import 'package:addpost/Config/contstants/widgets.dart';
 import 'package:addpost/Config/theme/theme.dart';
 import 'package:addpost/Screens/category_screens/components/audio_player.dart';
-import 'package:addpost/Screens/category_screens/components/profilePage.dart';
+import 'package:addpost/Screens/category_screens/components/product_Card.dart';
 import 'package:addpost/Screens/category_screens/components/video_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';

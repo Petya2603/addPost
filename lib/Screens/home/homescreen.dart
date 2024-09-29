@@ -38,30 +38,27 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Image.asset(
-                logoadmin,
-                height: 40,
-                width: 130,
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                Get.to(const BibliotekaScreen());
-              },
-              icon: SvgPicture.asset(
-                logo,
-                colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
-              ),
-            ),
-          ],
+        title: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Image.asset(
+            logoadmin,
+            height: 40,
+            width: 130,
+          ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(const BibliotekaScreen());
+            },
+            icon: SvgPicture.asset(
+              logo,
+              colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
+            ),
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: firestore.collection('Category').get(),
@@ -98,8 +95,8 @@ class _HomeScreenState extends State<HomeScreen>
                   tabs: category.map((doc) {
                     return Padding(
                         padding: const EdgeInsets.only(
-                          left: 10,
-                          right: 10,
+                          left: 15,
+                          right: 15,
                         ),
                         child: Tab(text: doc['name']));
                   }).toList(),

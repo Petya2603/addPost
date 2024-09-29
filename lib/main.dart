@@ -1,8 +1,8 @@
 import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/connnection_check/connection_check_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:addpost/Screens/home/homescreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const ConnectionCheckView(),
+      home: const HomeScreen(),
     );
   }
 }

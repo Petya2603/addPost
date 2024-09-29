@@ -24,8 +24,8 @@ class VideoCardState extends State<VideoCard> {
       videoPlayerController: VideoPlayerController.network(widget.videoUrl)
         ..initialize().then((_) {
           flickManager.flickControlManager?.pause();
-          setState(() {});
-        }),
+        })
+        ..setLooping(true),
     );
   }
 
