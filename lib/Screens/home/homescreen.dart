@@ -71,36 +71,33 @@ class _HomeScreenState extends State<HomeScreen>
           final category = snapshot.data?.docs ?? [];
           return Column(
             children: [
-              SizedBox(
-                height: 30,
-                child: TabBar(
-                  onTap: (index) {
-                    homeController.changeTab(index);
-                  },
-                  isScrollable: true,
-                  dividerColor: white,
-                  controller: homeController.tabController,
-                  unselectedLabelStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  labelStyle: TextStyle(
-                    color: white,
-                    fontSize: 16,
-                  ),
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    color: black2,
-                  ),
-                  tabs: category.map((doc) {
-                    return Padding(
-                        padding: const EdgeInsets.only(
-                          left: 15,
-                          right: 15,
-                        ),
-                        child: Tab(text: doc['name']));
-                  }).toList(),
+              TabBar(
+                onTap: (index) {
+                  homeController.changeTab(index);
+                },
+                isScrollable: true,
+                dividerColor: white,
+                controller: homeController.tabController,
+                unselectedLabelStyle: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
+                labelStyle: TextStyle(
+                  color: white,
+                  fontSize: 16,
+                ),
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: black2,
+                ),
+                tabs: category.map((doc) {
+                  return Padding(
+                      padding: const EdgeInsets.only(
+                        left: 15,
+                        right: 15,
+                      ),
+                      child: Tab(text: doc['name']));
+                }).toList(),
               ),
               const SizedBox(height: 10),
               Expanded(

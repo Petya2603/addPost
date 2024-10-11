@@ -7,7 +7,36 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 // ignore: depend_on_referenced_packages
+
+Future<String?> getMusicUrl(String category, String documentId) async {
+  DocumentSnapshot doc = await FirebaseFirestore.instance
+      .collection(category)
+      .doc(documentId)
+      .get();
+
+  if (doc.exists) {
+    return doc['music'];
+  } else {
+    print('Document does not exist.');
+    return null;
+  }
+}
+
+// Future<String?> getVideoUrl(String category, String documentId) async {
+//   DocumentSnapshot doc = await FirebaseFirestore.instance
+//       .collection(category)
+//       .doc(documentId)
+//       .get();
+
+//   if (doc.exists) {
+//     return doc['video'];
+//   } else {
+//     print('Document does not exist.');
+//     return null;
+//   }
+// }
 
 class CategoryContent extends StatelessWidget {
   CategoryContent({
@@ -76,6 +105,7 @@ class CategoryContent extends StatelessWidget {
         return VideoCard(
           videoUrl: data['video'],
           text: data['name'],
+
         );
       case '3':
         return AudioCard(

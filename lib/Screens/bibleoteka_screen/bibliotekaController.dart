@@ -1,11 +1,16 @@
 // ignore_for_file: file_names
 import 'dart:developer';
+import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class BibliotekaController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
+  late AudioPlayer audioPlayer = AudioPlayer();
+  RxInt currentlyPlayingIndex = (-1).obs;
+  RxBool isPlaying = false.obs;
   RxInt tabIndex = 0.obs;
 
   @override
@@ -27,5 +32,23 @@ class BibliotekaController extends GetxController
   void changeTab(int index) {
     tabIndex.value = index;
     log('it is tabbarvalue ${tabIndex.value} and it is index $index');
+  }
+
+  // Track whether the audio is playing
+
+  // Function to play/pause audio
+  void playPauseAudio(String filePath, int index) async {
+    if (currentlyPlayingIndex.value == index && isPlaying.value) {
+      await audioPlayer.pause();
+      isPlaying.value = false;
+    } else {
+      if (currentlyPlayingIndex.value != index) {
+        await audioPlayer.stop(); // Stop any previously playing audio
+      }
+      await audioPlayer
+          .play(DeviceFileSource(filePath)); // Play the selected audio
+      currentlyPlayingIndex.value = index;
+      isPlaying.value = true;
+    }
   }
 }
