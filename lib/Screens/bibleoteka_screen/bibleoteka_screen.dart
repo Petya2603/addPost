@@ -1,6 +1,6 @@
 import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/audi.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/video.dart';
+import 'package:addpost/Screens/bibleoteka_screen/Components/download_audi.dart';
+import 'package:addpost/Screens/bibleoteka_screen/Components/download_video.dart';
 import 'package:addpost/Screens/bibleoteka_screen/bibliotekaController.dart';
 import 'package:addpost/Screens/bibleoteka_screen/contactus_screens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,6 +28,12 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: black),
+          onPressed: () {
+            Get.back();
+          },
+        ),
         title: Text(
           'Библиотека',
           style: TextStyle(color: black),
@@ -67,7 +73,7 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
           Expanded(
             child: TabBarView(
               controller: bibliotekaController.tabController,
-              children: [
+              children: const [
                 DownloadedVideosPage(),
                 DownloadedAudiosPage(),
               ],

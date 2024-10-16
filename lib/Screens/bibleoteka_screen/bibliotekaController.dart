@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 import 'dart:developer';
-import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,19 +33,15 @@ class BibliotekaController extends GetxController
     log('it is tabbarvalue ${tabIndex.value} and it is index $index');
   }
 
-  // Track whether the audio is playing
-
-  // Function to play/pause audio
   void playPauseAudio(String filePath, int index) async {
     if (currentlyPlayingIndex.value == index && isPlaying.value) {
       await audioPlayer.pause();
       isPlaying.value = false;
     } else {
       if (currentlyPlayingIndex.value != index) {
-        await audioPlayer.stop(); // Stop any previously playing audio
+        await audioPlayer.stop();
       }
-      await audioPlayer
-          .play(DeviceFileSource(filePath)); // Play the selected audio
+      await audioPlayer.play(DeviceFileSource(filePath));
       currentlyPlayingIndex.value = index;
       isPlaying.value = true;
     }

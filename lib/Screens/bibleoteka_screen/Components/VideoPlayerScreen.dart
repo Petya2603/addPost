@@ -1,3 +1,7 @@
+// ignore: duplicate_ignore
+// ignore: file_names
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,8 +11,13 @@ import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String videoPath;
+  final String text;
 
-  const VideoPlayerScreen({super.key, required this.videoPath});
+  const VideoPlayerScreen({
+    super.key,
+    required this.videoPath,
+    required this.text,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -36,7 +45,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Video Player'),
+        title: const Text("Video"),
       ),
       body: Center(
         child: Card(

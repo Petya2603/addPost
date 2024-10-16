@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:addpost/Screens/category_screens/components/product_card_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +43,16 @@ class PostPage extends StatelessWidget {
                 ),
               ),
             ),
-            ExtendedImage.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 250,
+            GestureDetector(
+              onTap: () {
+                ProductCardScreen(imageUrl: imageUrl);
+              },
+              child: ExtendedImage.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 250,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(
