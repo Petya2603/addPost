@@ -43,7 +43,6 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                     MaterialPageRoute(
                       builder: (context) => VideoPlayerScreen(
                         videoPath: video['path'],
-                        text: video['text'],
                       ),
                     ),
                   );
@@ -87,10 +86,6 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                                     video['name'],
                                     style: const TextStyle(fontSize: 14),
                                   ),
-                                ),
-                                Text(
-                                  video['time'],
-                                  style: TextStyle(fontSize: 10, color: grey2),
                                 ),
                               ],
                             ),

@@ -197,11 +197,11 @@ class VideoCardState extends State<VideoCard> {
         SnackBar(content: Text('Error: $e')),
       );
     } finally {
-      Navigator.of(context).pop();
       setState(() {
         isDownloading = false;
         downloadProgress = 0.0;
       });
+      Navigator.of(context).pop();
     }
   }
 

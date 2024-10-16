@@ -11,12 +11,10 @@ import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String videoPath;
-  final String text;
 
   const VideoPlayerScreen({
     super.key,
     required this.videoPath,
-    required this.text,
   });
 
   @override
