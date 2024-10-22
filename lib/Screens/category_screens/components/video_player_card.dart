@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:addpost/Config/contstants/constants.dart';
+import 'package:addpost/Config/constants/constants.dart';
 import 'package:addpost/Config/theme/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -13,6 +13,8 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:video_compress/video_compress.dart';
+import '../../../Config/constants/widgets.dart';
 
 class VideoCard extends StatefulWidget {
   final String videoUrl;
@@ -31,11 +33,29 @@ class VideoCard extends StatefulWidget {
 }
 
 class VideoCardState extends State<VideoCard> {
-  late FlickManager flickManager;
+  late FlickManager _controller;
   final firestore = FirebaseFirestore.instance;
   var isDownloading = false;
   var downloadProgress = 0.0;
   late Dio _dio;
+
+  @override
+  void initState() {
+    super.initState();
+    _dio = Dio();
+    _controller = FlickManager(
+      videoPlayerController: VideoPlayerController.network(
+        widget.videoUrl,
+        videoPlayerOptions: VideoPlayerOptions(
+          mixWithOthers: false,
+        ),
+      )..initialize().then((_) {
+          setState(() {
+            _controller.flickVideoManager!.videoPlayerController?.pause();
+          });
+        }),
+    );
+  }
 
   Future<void> _showDownloadConfirmationDialog() async {
     bool shouldDownload = false;
@@ -174,6 +194,16 @@ class VideoCardState extends State<VideoCard> {
         }
       });
 
+      final compressedVideo = await VideoCompress.compressVideo(
+        savePath,
+        quality: VideoQuality.MediumQuality,
+        deleteOrigin: true,
+      );
+
+      if (compressedVideo != null) {
+        savePath = compressedVideo.path!;
+      }
+
       final thumbnailPath = await VideoThumbnail.thumbnailFile(
         video: savePath,
         thumbnailPath: (await getTemporaryDirectory()).path,
@@ -189,10 +219,12 @@ class VideoCardState extends State<VideoCard> {
         'thumbnail': thumbnailPath,
       });
 
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Video downloaded to $savePath')),
+        SnackBar(content: Text('Video downloaded to ${widget.text}')),
       );
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
@@ -201,30 +233,9 @@ class VideoCardState extends State<VideoCard> {
         isDownloading = false;
         downloadProgress = 0.0;
       });
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _dio = Dio();
-    flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.network(widget.videoUrl)
-        ..setLooping(true)
-        ..initialize().then((_) {
-          if (flickManager.flickControlManager != null) {
-            flickManager.flickControlManager!.pause();
-          }
-        }),
-    );
-  }
-
-  @override
-  void dispose() {
-    flickManager.dispose();
-    _dio.close();
-    super.dispose();
   }
 
   @override
@@ -255,25 +266,22 @@ class VideoCardState extends State<VideoCard> {
         Card(
           child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: FutureBuilder(
-              future: flickManager.flickVideoManager?.videoPlayerController
-                  ?.initialize(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return FlickVideoPlayer(
-                    flickManager: flickManager,
-                    flickVideoWithControls: const FlickVideoWithControls(
-                      controls: FlickPortraitControls(),
-                    ),
-                  );
-                } else {
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
+            child: FlickVideoPlayer(
+              flickManager: _controller,
+              flickVideoWithControls: const FlickVideoWithControls(
+                controls: FlickPortraitControls(),
+              ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _dio.close();
+    super.dispose();
   }
 }

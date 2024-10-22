@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id 'com.google.gms.google-services'
 }
 
 def localProperties = new Properties()
@@ -72,7 +73,7 @@ configurations {
         resolutionStrategy.eachDependency { DependencyResolveDetails details ->
             if (details.requested.group == 'org.jetbrains.kotlin' &&
                 details.requested.name.contains('stdlib')) {
-                details.useVersion "1.6.0" 
+                details.useVersion "1.9.0" 
             }
         }
     }

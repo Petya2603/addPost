@@ -1,4 +1,4 @@
-import 'package:addpost/Config/contstants/widgets.dart';
+import 'package:addpost/Config/constants/widgets.dart';
 import 'package:addpost/Config/theme/theme.dart';
 import 'package:addpost/Screens/category_screens/components/audio_player_card.dart';
 import 'package:addpost/Screens/category_screens/components/product_Card.dart';
@@ -46,7 +46,7 @@ class CategoryContent extends StatelessWidget {
         return Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(left: 10, right: 10, top: 7),
+              margin: const EdgeInsets.only(left: 5, right: 5, top: 5),
               child: Text(
                 data['name'],
                 style: TextStyle(fontSize: 18, color: black2),
@@ -66,7 +66,7 @@ class CategoryContent extends StatelessWidget {
               },
               child: ExtendedImage.network(
                 data['images'][index],
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
               ),
             ),
           ],
@@ -83,6 +83,7 @@ class CategoryContent extends StatelessWidget {
           title: data['name'],
           image: data['image'],
           desc: data['desc'],
+          index: index,
         );
       default:
         return const Card(

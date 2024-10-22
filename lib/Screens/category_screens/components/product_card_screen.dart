@@ -19,7 +19,7 @@ class ProductCardScreen extends StatelessWidget {
               scaleEnabled: true,
               child: ExtendedImage.network(
                 imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 width: double.infinity,
                 height: double.infinity,
               ),
@@ -29,7 +29,7 @@ class ProductCardScreen extends StatelessWidget {
             left: 15,
             top: 10,
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: grey3),
+              icon: Icon(Icons.arrow_back, color: grey2),
               onPressed: () {
                 Get.back();
               },

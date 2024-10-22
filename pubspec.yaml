@@ -25,6 +25,8 @@ dependencies:
   hive: ^2.2.3
   dio: ^5.7.0
   video_thumbnail: ^0.5.0
+  video_compress: 
+
 
 
 

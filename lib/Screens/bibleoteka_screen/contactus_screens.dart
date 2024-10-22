@@ -1,4 +1,4 @@
-import 'package:addpost/Config/contstants/widgets.dart';
+import 'package:addpost/Config/constants/widgets.dart';
 import 'package:addpost/Config/theme/theme.dart';
 import 'package:flutter/material.dart';
 

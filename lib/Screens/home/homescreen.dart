@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:addpost/Config/contstants/constants.dart';
-import 'package:addpost/Config/contstants/widgets.dart';
+import 'package:addpost/Config/constants/constants.dart';
+import 'package:addpost/Config/constants/widgets.dart';
 import 'package:addpost/Config/theme/theme.dart';
 import 'package:addpost/Screens/bibleoteka_screen/bibleoteka_screen.dart';
 import 'package:addpost/Screens/category_screens/category_content.dart';

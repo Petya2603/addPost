@@ -45,7 +45,12 @@ class PostPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                ProductCardScreen(imageUrl: imageUrl);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductCardScreen(imageUrl: imageUrl),
+                  ),
+                );
               },
               child: ExtendedImage.network(
                 imageUrl,
@@ -59,7 +64,7 @@ class PostPage extends StatelessWidget {
                   left: 10, right: 10, top: 10, bottom: 10),
               child: Text(
                 description,
-                style: const TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 15),
               ),
             ),
           ],

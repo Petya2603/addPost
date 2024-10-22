@@ -1,21 +1,23 @@
 import 'dart:io';
 
-import 'package:addpost/Config/contstants/constants.dart';
 import 'package:addpost/Config/theme/theme.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
+import '../../../Config/constants/constants.dart';
+import '../controller/audio_controller.dart';
 
 class AudioCard extends StatefulWidget {
   final String audioUrl;
   final String title;
   final String image;
   final String desc;
+  final int index;
 
   const AudioCard({
     super.key,
@@ -23,6 +25,7 @@ class AudioCard extends StatefulWidget {
     required this.title,
     required this.image,
     required this.desc,
+    required this.index,
   });
 
   @override
@@ -30,11 +33,22 @@ class AudioCard extends StatefulWidget {
 }
 
 class AudioCardState extends State<AudioCard> {
-  late AudioPlayer audioPlayer;
-  bool isPlaying = false;
   late Dio _dio;
   bool isDownloading = false;
   double downloadProgress = 0.0;
+  AudioController audioController = Get.put(AudioController());
+
+  @override
+  void initState() {
+    super.initState();
+    _dio = Dio();
+  }
+
+  @override
+  void dispose() {
+    _dio.close();
+    super.dispose();
+  }
 
   Future<void> _showDownloadConfirmationDialog() async {
     bool shouldDownload = false;
@@ -183,7 +197,7 @@ class AudioCardState extends State<AudioCard> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Аудио загружено на $savePath')),
+        SnackBar(content: Text('Аудио загружено на ${widget.title}')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -194,36 +208,6 @@ class AudioCardState extends State<AudioCard> {
       setState(() {
         isDownloading = false;
         downloadProgress = 0.0;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _dio = Dio();
-    audioPlayer = AudioPlayer();
-  }
-
-  @override
-  void dispose() {
-    audioPlayer.stop();
-    audioPlayer.dispose();
-    _dio.close();
-    super.dispose();
-  }
-
-  void playPause() async {
-    // ignore: unnecessary_null_comparison
-    if (audioPlayer != null) {
-      if (isPlaying) {
-        await audioPlayer.pause();
-      } else {
-        await audioPlayer.play(UrlSource(widget.audioUrl));
-      }
-
-      setState(() {
-        isPlaying = !isPlaying;
       });
     }
   }
@@ -268,10 +252,15 @@ class AudioCardState extends State<AudioCard> {
                 ],
               ),
             ]),
-            IconButton(
-              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
-              onPressed: playPause,
-            ),
+            Obx(() => IconButton(
+                  icon: Icon(audioController.currentlyPlayingIndex.value ==
+                              widget.index &&
+                          audioController.isPlaying.value
+                      ? Icons.pause
+                      : Icons.play_arrow),
+                  onPressed: () =>
+                      audioController.playPause(widget.audioUrl, widget.index),
+                )),
             IconButton(
               onPressed: _showDownloadConfirmationDialog,
               icon: SvgPicture.asset(
