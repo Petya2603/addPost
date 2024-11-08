@@ -1,29 +1,46 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
-// ignore: depend_on_referenced_packages
 
 class AudioController extends GetxController {
-  RxInt currentlyPlayingIndex = (-1).obs;
-  AudioPlayer audioPlayer = AudioPlayer();
+  late AudioPlayer audioPlayer;
   RxBool isPlaying = false.obs;
+  Rx<Duration> duration = Duration.zero.obs;
+  Rx<Duration> position = Duration.zero.obs;
 
-  void playPause(String audioUrl, int index) async {
-    if (currentlyPlayingIndex.value == index && isPlaying.value) {
+  @override
+  void onInit() {
+    super.onInit();
+    audioPlayer = AudioPlayer();
+    audioPlayer.onDurationChanged.listen((d) {
+      duration.value = d;
+    });
+    audioPlayer.onPositionChanged.listen((p) {
+      position.value = p;
+    });
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      isPlaying.value = state == PlayerState.playing;
+    });
+
+    audioPlayer.stop();
+  }
+
+  Future<void> playPauseAudio(String audioUrl) async {
+    if (isPlaying.value) {
       await audioPlayer.pause();
-      isPlaying.value = false;
     } else {
-      if (currentlyPlayingIndex.value != index) {
-        await audioPlayer.stop();
-        currentlyPlayingIndex.value = index;
-      }
-      await audioPlayer.play(UrlSource(audioUrl));
-      isPlaying.value = true;
+      await audioPlayer.setSourceUrl(audioUrl);
+      await audioPlayer.resume();
     }
   }
 
+  Future<void> seekAudio(double value) async {
+    final newPosition = Duration(milliseconds: value.toInt());
+    await audioPlayer.seek(newPosition);
+  }
+
   @override
-  void dispose() {
+  void onClose() {
     audioPlayer.dispose();
-    super.dispose();
+    super.onClose();
   }
 }

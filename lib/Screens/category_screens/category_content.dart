@@ -58,14 +58,14 @@ class CategoryContent extends StatelessWidget {
               onTap: () {
                 Get.to(
                   PostPage(
-                    imageUrl: data['images'][index],
+                    imageUrl: data['images'][0],
                     title: data['name'],
                     description: data['desc'],
                   ),
                 );
               },
               child: ExtendedImage.network(
-                data['images'][index],
+                data['images'][0],
                 fit: BoxFit.contain,
               ),
             ),
@@ -73,15 +73,15 @@ class CategoryContent extends StatelessWidget {
         );
       case '2':
         return VideoCard(
-          videoUrl: data['video'],
+          videoUrl: data['video'][0],
           text: data['name'],
           time: data['time'],
         );
       case '3':
         return AudioCard(
-          audioUrl: data['music'],
+          audioUrl: data['music'][0],
           title: data['name'],
-          image: data['image'],
+          image: data['image'][0],
           desc: data['desc'],
           index: index,
         );

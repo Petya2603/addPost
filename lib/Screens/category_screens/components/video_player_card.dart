@@ -13,8 +13,6 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import 'package:video_compress/video_compress.dart';
-import '../../../Config/constants/widgets.dart';
 
 class VideoCard extends StatefulWidget {
   final String videoUrl;
@@ -185,6 +183,7 @@ class VideoCardState extends State<VideoCard> {
       String savePath =
           '${appDocDir.path}/video${DateTime.now().millisecondsSinceEpoch}.mp4';
 
+      // Video dosyasını olduğu gibi indiriyoruz, compress işlemi yok.
       await _dio.download(widget.videoUrl, savePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
@@ -194,16 +193,7 @@ class VideoCardState extends State<VideoCard> {
         }
       });
 
-      final compressedVideo = await VideoCompress.compressVideo(
-        savePath,
-        quality: VideoQuality.MediumQuality,
-        deleteOrigin: true,
-      );
-
-      if (compressedVideo != null) {
-        savePath = compressedVideo.path!;
-      }
-
+      // Thumbnail oluşturuyoruz.
       final thumbnailPath = await VideoThumbnail.thumbnailFile(
         video: savePath,
         thumbnailPath: (await getTemporaryDirectory()).path,
@@ -212,6 +202,7 @@ class VideoCardState extends State<VideoCard> {
         quality: 75,
       );
 
+      // Videoyu Hive’a kaydediyoruz.
       var box = Hive.box('downloadedVideos');
       await box.add({
         'path': savePath,
@@ -219,12 +210,11 @@ class VideoCardState extends State<VideoCard> {
         'thumbnail': thumbnailPath,
       });
 
-      // ignore: use_build_context_synchronously
+      // Kullanıcıya indirme bildirimi.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Video downloaded to ${widget.text}')),
       );
     } catch (e) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
@@ -281,7 +271,6 @@ class VideoCardState extends State<VideoCard> {
   @override
   void dispose() {
     _controller.dispose();
-    _dio.close();
     super.dispose();
   }
 }

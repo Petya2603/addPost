@@ -46,7 +46,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                       MaterialPageRoute(
                         builder: (context) => VideoPlayerScreen(
                           videoPath: video['path'],
-                          text: video['name'],
+                          text: video['name'][0],
                         ),
                       ),
                     );
@@ -89,7 +89,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                                   SizedBox(
                                     width: 160,
                                     child: Text(
-                                      video['name'],
+                                      video['name'][0],
                                       style: const TextStyle(fontSize: 14),
                                     ),
                                   ),

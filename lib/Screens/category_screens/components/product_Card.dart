@@ -38,7 +38,7 @@ class PostPage extends StatelessWidget {
               child: Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -54,7 +54,7 @@ class PostPage extends StatelessWidget {
               },
               child: ExtendedImage.network(
                 imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 width: double.infinity,
                 height: 250,
               ),
@@ -64,7 +64,7 @@ class PostPage extends StatelessWidget {
                   left: 10, right: 10, top: 10, bottom: 10),
               child: Text(
                 description,
-                style: const TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 17),
               ),
             ),
           ],

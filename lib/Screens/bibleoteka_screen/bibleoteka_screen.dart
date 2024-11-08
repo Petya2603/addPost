@@ -41,7 +41,7 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Get.to(const ContactUsScreen());
+              Get.to( ContactUsScreen());
             },
             style: TextButton.styleFrom(foregroundColor: orange),
             child: const Text('Связаться с нами'),

@@ -1,15 +1,14 @@
 import 'dart:io';
-
-import 'package:addpost/Config/theme/theme.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
+
 import '../../../Config/constants/constants.dart';
+import '../../../Config/theme/theme.dart';
 import '../controller/audio_controller.dart';
 
 class AudioCard extends StatefulWidget {
@@ -20,34 +19,29 @@ class AudioCard extends StatefulWidget {
   final int index;
 
   const AudioCard({
-    super.key,
+    Key? key,
     required this.audioUrl,
     required this.title,
     required this.image,
     required this.desc,
     required this.index,
-  });
+  }) : super(key: key);
 
   @override
-  AudioCardState createState() => AudioCardState();
+  // ignore: library_private_types_in_public_api
+  _AudioCardState createState() => _AudioCardState();
 }
 
-class AudioCardState extends State<AudioCard> {
+class _AudioCardState extends State<AudioCard> {
   late Dio _dio;
   bool isDownloading = false;
   double downloadProgress = 0.0;
-  AudioController audioController = Get.put(AudioController());
+  final AudioController audioController = Get.put(AudioController());
 
   @override
   void initState() {
     super.initState();
     _dio = Dio();
-  }
-
-  @override
-  void dispose() {
-    _dio.close();
-    super.dispose();
   }
 
   Future<void> _showDownloadConfirmationDialog() async {
@@ -215,61 +209,117 @@ class AudioCardState extends State<AudioCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 3),
-      color: music,
-      child: Container(
-        margin: const EdgeInsets.only(left: 13, right: 13, top: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(children: [
-              SizedBox(
-                height: 70,
-                width: 70,
-                child: ExtendedImage.network(
-                  widget.image,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 120,
-                    child: Text(
-                      widget.title,
-                      style: const TextStyle(fontSize: 15),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: Text(
-                      widget.desc,
-                      style: TextStyle(fontSize: 12, color: grey2),
-                    ),
-                  ),
-                ],
-              ),
-            ]),
-            Obx(() => IconButton(
-                  icon: Icon(audioController.currentlyPlayingIndex.value ==
-                              widget.index &&
-                          audioController.isPlaying.value
-                      ? Icons.pause
-                      : Icons.play_arrow),
-                  onPressed: () =>
-                      audioController.playPause(widget.audioUrl, widget.index),
-                )),
-            IconButton(
-              onPressed: _showDownloadConfirmationDialog,
-              icon: SvgPicture.asset(
-                download,
-                colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
-              ),
+      padding: const EdgeInsets.all(5),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: ExtendedImage.network(
+              widget.image,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  widget.desc,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: grey2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Obx(() => Slider(
+                      activeColor: orange,
+                      inactiveColor: orange.withOpacity(0.3),
+                      min: 0.0,
+                      max: audioController.duration.value.inMilliseconds
+                          .toDouble(),
+                      value: audioController.position.value.inMilliseconds
+                          .toDouble(),
+                      onChanged: audioController.seekAudio,
+                    )),
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        audioController.position.value
+                            .toString()
+                            .split('.')
+                            .first,
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.black54),
+                      ),
+                      Text(
+                        audioController.duration.value
+                            .toString()
+                            .split('.')
+                            .first,
+                        style: const TextStyle(
+                            fontSize: 12, color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            children: [
+              Obx(() => IconButton(
+                    icon: Icon(
+                      audioController.isPlaying.value
+                          ? Icons.pause_circle
+                          : Icons.play_circle,
+                      color: orange,
+                      size: 40,
+                    ),
+                    onPressed: () =>
+                        audioController.playPauseAudio(widget.audioUrl),
+                  )),
+              IconButton(
+                icon: SvgPicture.asset(
+                  download,
+                  colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
+                ),
+                onPressed: _showDownloadConfirmationDialog,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

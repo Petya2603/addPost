@@ -10,12 +10,12 @@ const String logo = 'assets/icons/flash-on.svg';
 const String download = 'assets/icons/Icon.svg';
 const String downloadmusic = 'assets/images/music.png';
 
-List<String> tabName = [
-  'Футбол',
-  'UFC',
-  'Автомобили',
-  'Аниме',
-  'Музыка',
-  'Новости',
-  'Природа'
-];
+// List<String> tabName = [
+//   'Футбол',
+//   'UFC',
+//   'Автомобили',
+//   'Аниме',
+//   'Музыка',
+//   'Новости',
+//   'Природа'
+// ];

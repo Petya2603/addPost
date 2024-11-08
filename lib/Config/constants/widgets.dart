@@ -6,8 +6,12 @@ dynamic spinKit() {
 }
 
 dynamic buildTextFormField(
-    {required String labelText, required String hintText, int? maxLines}) {
+    {required String labelText,
+    required String hintText,
+    int? maxLines,
+    required TextEditingController controller}) {
   return TextFormField(
+    controller: controller,
     decoration: InputDecoration(
       labelText: labelText,
       hintText: hintText,
