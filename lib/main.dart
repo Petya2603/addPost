@@ -1,5 +1,6 @@
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/home/homescreen.dart';
+import 'package:addpost/Config/constants/constants.dart';
+import 'package:addpost/config/theme/theme.dart';
+import 'package:addpost/screens/home/homescreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: white,
         primaryColor: orange,
-        fontFamily: "Gilroy",
+        fontFamily: gilroyRegular,
         appBarTheme: AppBarTheme(
           backgroundColor: white,
         ),

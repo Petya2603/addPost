@@ -1,5 +1,5 @@
-import 'package:addpost/Config/constants/widgets.dart';
-import 'package:addpost/Config/theme/theme.dart';
+import 'package:addpost/config/constants/widgets.dart';
+import 'package:addpost/config/theme/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -10,9 +10,7 @@ class ContactUsScreen extends StatelessWidget {
   final TextEditingController contactController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
   Future<void> sendContactUsData() async {
-    if (nameController.text.isNotEmpty &&
-        contactController.text.isNotEmpty &&
-        messageController.text.isNotEmpty) {
+    if (nameController.text.isNotEmpty && contactController.text.isNotEmpty && messageController.text.isNotEmpty) {
       try {
         await FirebaseFirestore.instance.collection("Contact_Us").add({
           'name': nameController.text,
@@ -47,8 +45,7 @@ class ContactUsScreen extends StatelessWidget {
       ),
       body: ListView(children: [
         Padding(
-          padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -68,10 +65,7 @@ class ContactUsScreen extends StatelessWidget {
                 hintText: 'Введите свое имя',
               ),
               const SizedBox(height: 16),
-              buildTextFormField(
-                  controller: contactController,
-                  labelText: 'Номер телефона или почта',
-                  hintText: 'Введите номер телефона'),
+              buildTextFormField(controller: contactController, labelText: 'Номер телефона или почта', hintText: 'Введите номер телефона'),
               const SizedBox(height: 16),
               buildTextFormField(
                 controller: messageController,

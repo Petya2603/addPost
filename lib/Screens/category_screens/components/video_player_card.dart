@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
-import 'package:addpost/Config/constants/constants.dart';
-import 'package:addpost/Config/theme/theme.dart';
+import 'package:addpost/config/constants/constants.dart';
+import 'package:addpost/config/theme/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flick_video_player/flick_video_player.dart';
@@ -33,8 +33,8 @@ class VideoCard extends StatefulWidget {
 class VideoCardState extends State<VideoCard> {
   late FlickManager _controller;
   final firestore = FirebaseFirestore.instance;
-  var isDownloading = false;
-  var downloadProgress = 0.0;
+  bool isDownloading = false;
+  double downloadProgress = 0.0;
   late Dio _dio;
 
   @override
@@ -176,16 +176,13 @@ class VideoCardState extends State<VideoCard> {
     }
   }
 
-  Future<void> _downloadAndSaveVideo(
-      void Function(void Function()) updateDialogState) async {
+  Future<void> _downloadAndSaveVideo(void Function(void Function()) updateDialogState) async {
     try {
       Directory appDocDir = await getApplicationDocumentsDirectory();
-      String savePath =
-          '${appDocDir.path}/video${DateTime.now().millisecondsSinceEpoch}.mp4';
+      String savePath = '${appDocDir.path}/video${DateTime.now().millisecondsSinceEpoch}.mp4';
 
-      // Video dosyasını olduğu gibi indiriyoruz, compress işlemi yok.
-      await _dio.download(widget.videoUrl, savePath,
-          onReceiveProgress: (received, total) {
+      // Download video without compression.
+      await _dio.download(widget.videoUrl, savePath, onReceiveProgress: (received, total) {
         if (total != -1) {
           updateDialogState(() {
             downloadProgress = received / total;
@@ -193,7 +190,7 @@ class VideoCardState extends State<VideoCard> {
         }
       });
 
-      // Thumbnail oluşturuyoruz.
+      // Generate thumbnail.
       final thumbnailPath = await VideoThumbnail.thumbnailFile(
         video: savePath,
         thumbnailPath: (await getTemporaryDirectory()).path,
@@ -202,7 +199,7 @@ class VideoCardState extends State<VideoCard> {
         quality: 75,
       );
 
-      // Videoyu Hive’a kaydediyoruz.
+      // Save video to Hive.
       var box = Hive.box('downloadedVideos');
       await box.add({
         'path': savePath,
@@ -210,7 +207,7 @@ class VideoCardState extends State<VideoCard> {
         'thumbnail': thumbnailPath,
       });
 
-      // Kullanıcıya indirme bildirimi.
+      // Notify user of successful download.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Video downloaded to ${widget.text}')),
       );
@@ -234,8 +231,7 @@ class VideoCardState extends State<VideoCard> {
       children: [
         Container(
           margin: const EdgeInsets.only(left: 10, right: 10, top: 7),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Expanded(
               child: Text(
                 widget.text,
@@ -254,12 +250,15 @@ class VideoCardState extends State<VideoCard> {
           ]),
         ),
         Card(
-          child: AspectRatio(
-            aspectRatio: 16 / 9,
-            child: FlickVideoPlayer(
-              flickManager: _controller,
-              flickVideoWithControls: const FlickVideoWithControls(
-                controls: FlickPortraitControls(),
+          child: ClipRRect(
+            borderRadius: borderRadius20,
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: FlickVideoPlayer(
+                flickManager: _controller,
+                flickVideoWithControls: const FlickVideoWithControls(
+                  controls: FlickPortraitControls(),
+                ),
               ),
             ),
           ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../../Config/constants/constants.dart';
-import '../../../Config/theme/theme.dart';
+import '../../../config/constants/constants.dart';
+import '../../../config/theme/theme.dart';
 import '../controller/audio_controller.dart';
 
 class AudioCard extends StatefulWidget {
@@ -19,13 +20,13 @@ class AudioCard extends StatefulWidget {
   final int index;
 
   const AudioCard({
-    Key? key,
+    super.key,
     required this.audioUrl,
     required this.title,
     required this.image,
     required this.desc,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -166,15 +167,12 @@ class _AudioCardState extends State<AudioCard> {
     }
   }
 
-  Future<void> _downloadAndSaveAudio(
-      void Function(void Function()) updateDialogState) async {
+  Future<void> _downloadAndSaveAudio(void Function(void Function()) updateDialogState) async {
     try {
       Directory appDocDir = await getApplicationDocumentsDirectory();
-      String savePath =
-          '${appDocDir.path}/audio${DateTime.now().millisecondsSinceEpoch}.mp3';
+      String savePath = '${appDocDir.path}/audio${DateTime.now().millisecondsSinceEpoch}.mp3';
 
-      await _dio.download(widget.audioUrl, savePath,
-          onReceiveProgress: (received, total) {
+      await _dio.download(widget.audioUrl, savePath, onReceiveProgress: (received, total) {
         if (total != -1) {
           updateDialogState(() {
             downloadProgress = received / total;
@@ -183,12 +181,7 @@ class _AudioCardState extends State<AudioCard> {
       });
 
       var box = Hive.box('downloadedAudios');
-      await box.add({
-        'path': savePath,
-        'title': widget.title,
-        'image': widget.image,
-        'desc': widget.desc
-      });
+      await box.add({'path': savePath, 'title': widget.title, 'image': widget.image, 'desc': widget.desc});
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Аудио загружено на ${widget.title}')),
@@ -264,10 +257,8 @@ class _AudioCardState extends State<AudioCard> {
                       activeColor: orange,
                       inactiveColor: orange.withOpacity(0.3),
                       min: 0.0,
-                      max: audioController.duration.value.inMilliseconds
-                          .toDouble(),
-                      value: audioController.position.value.inMilliseconds
-                          .toDouble(),
+                      max: audioController.duration.value.inMilliseconds.toDouble(),
+                      value: audioController.position.value.inMilliseconds.toDouble(),
                       onChanged: audioController.seekAudio,
                     )),
                 Obx(
@@ -275,20 +266,12 @@ class _AudioCardState extends State<AudioCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        audioController.position.value
-                            .toString()
-                            .split('.')
-                            .first,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black54),
+                        audioController.position.value.toString().split('.').first,
+                        style: const TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                       Text(
-                        audioController.duration.value
-                            .toString()
-                            .split('.')
-                            .first,
-                        style: const TextStyle(
-                            fontSize: 12, color: Colors.black54),
+                        audioController.duration.value.toString().split('.').first,
+                        style: const TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                     ],
                   ),
@@ -301,14 +284,11 @@ class _AudioCardState extends State<AudioCard> {
             children: [
               Obx(() => IconButton(
                     icon: Icon(
-                      audioController.isPlaying.value
-                          ? Icons.pause_circle
-                          : Icons.play_circle,
+                      audioController.isPlaying.value ? Icons.pause_circle : Icons.play_circle,
                       color: orange,
                       size: 40,
                     ),
-                    onPressed: () =>
-                        audioController.playPauseAudio(widget.audioUrl),
+                    onPressed: () => audioController.playPauseAudio(widget.audioUrl),
                   )),
               IconButton(
                 icon: SvgPicture.asset(

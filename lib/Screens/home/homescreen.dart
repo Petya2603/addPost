@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:addpost/Config/constants/constants.dart';
-import 'package:addpost/Config/constants/widgets.dart';
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/bibleoteka_screen/bibleoteka_screen.dart';
+
 import 'package:addpost/Screens/category_screens/category_content.dart';
-import 'package:addpost/Screens/home/home_controller.dart';
+import 'package:addpost/config/constants/constants.dart';
+import 'package:addpost/config/constants/widgets.dart';
+import 'package:addpost/config/theme/theme.dart';
+import 'package:addpost/screens/bibleoteka_screen/bibleoteka_screen.dart';
+import 'package:addpost/screens/home/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,8 +24,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final HomeController homeController = Get.put(HomeController());
 
   Future<int> _initializeCategoryCount() async {
-    final querySnapshot = await firestore.collection('Category').get();
-    return querySnapshot.docs.length;
+    try {
+      final querySnapshot = await firestore.collection('Category').get();
+      return querySnapshot.docs.length;
+    } catch (error) {
+      print('Error initializing category count: $error');
+      rethrow;
+    }
   }
 
   @override
@@ -59,31 +65,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset(
-          logoadmin,
-          height: 40,
-          width: 130,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.to(const BibliotekaScreen());
-            },
-            icon: SvgPicture.asset(
-              logo,
-              colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
-            ),
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(),
       body: FutureBuilder<int>(
         future: _initializeCategoryCount(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text("Error loading categories"));
           } else if (!snapshot.hasData) {
-            return Center(child: spinKit());
+            return spinKit();
           }
 
           final categoryCount = snapshot.data!;
@@ -91,52 +80,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
           return Obx(() {
             if (homeController.isConnected.value) {
-              return FutureBuilder(
+              return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 future: firestore.collection('Category').get(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return const Center(
-                        child: Text("Error loading categories"));
-                  } else if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(child: spinKit());
+                    return const Center(child: Text("Error loading categories"));
+                  } else if (snapshot.connectionState == ConnectionState.waiting) {
+                    return spinKit();
                   }
 
-                  final category = snapshot.data?.docs ?? [];
+                  final categoryDocs = snapshot.data?.docs ?? [];
                   return Column(
                     children: [
-                      TabBar(
-                        onTap: (index) {
-                          homeController.changeTab(index);
-                        },
-                        isScrollable: true,
-                        dividerColor: white,
-                        controller: tabController,
-                        unselectedLabelStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                        labelStyle: TextStyle(
-                          color: white,
-                          fontSize: 16,
-                        ),
-                        indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: black2,
-                        ),
-                        tabs: category.map((doc) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Tab(text: doc['name']),
-                          );
-                        }).toList(),
-                      ),
+                      _buildTabBar(categoryDocs),
                       const SizedBox(height: 10),
                       Expanded(
                         child: Obx(
                           () => IndexedStack(
                             index: homeController.tabIndex.value,
-                            children: category.map((doc) {
+                            children: categoryDocs.map((doc) {
                               return CategoryContent(
                                 categoryname: doc['name'],
                               );
@@ -149,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 },
               );
             } else {
-              return _buildNoInternetWidget();
+              return buildNoInternetWidget(onTap: retryConnection);
             }
           });
         },
@@ -157,41 +119,55 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildNoInternetWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.wifi_off,
-                size: 75,
-                color: grey1,
-              ),
-              const SizedBox(height: 40),
-              Text(
-                'У вас нет подключения к Интернету.',
-                style: TextStyle(fontSize: 19, color: black2),
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                onPressed: retryConnection,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: orange,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                ),
-                child: Text(
-                  'Попробуйте еще раз',
-                  style: TextStyle(color: white, fontSize: 16),
-                ),
-              ),
-            ],
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Image.asset(
+        logoadmin,
+        height: 40,
+        width: 130,
+      ),
+      scrolledUnderElevation: 0.0,
+      actions: [
+        IconButton(
+          onPressed: () {
+            Get.to(const BibliotekaScreen());
+          },
+          icon: SvgPicture.asset(
+            logo,
+            colorFilter: ColorFilter.mode(orange, BlendMode.srcIn),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildTabBar(List<QueryDocumentSnapshot<Map<String, dynamic>>> categoryDocs) {
+    return TabBar(
+      onTap: (index) {
+        homeController.changeTab(index);
+      },
+      isScrollable: true,
+      dividerColor: white,
+      tabAlignment: TabAlignment.start,
+      padding: EdgeInsets.zero,
+      controller: tabController,
+      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      unselectedLabelStyle: const TextStyle(fontSize: 16, fontFamily: gilroyRegular),
+      labelStyle: TextStyle(
+        color: white,
+        fontFamily: gilroyBold,
+        fontSize: 16,
+      ),
+      indicator: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+        color: black2,
+      ),
+      tabs: categoryDocs.map((doc) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Tab(text: doc['name']),
+        );
+      }).toList(),
     );
   }
 }

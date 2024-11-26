@@ -1,10 +1,11 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/VideoPlayerScreen.dart';
+import 'dart:io';
+
+import 'package:addpost/config/theme/theme.dart';
+import 'package:addpost/screens/bibleoteka_screen/components/VideoPlayerScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'dart:io';
 
 class DownloadedVideosPage extends StatefulWidget {
   const DownloadedVideosPage({super.key});
@@ -57,8 +58,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                     height: 80,
                     width: 70,
                     child: Container(
-                      margin:
-                          const EdgeInsets.only(left: 13, right: 13, top: 5),
+                      margin: const EdgeInsets.only(left: 13, right: 13, top: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,8 +68,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                             children: [
                               if (video['thumbnail'] != null)
                                 Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 10, right: 5),
+                                  margin: const EdgeInsets.only(left: 10, right: 5),
                                   width: 85,
                                   height: 70,
                                   child: ClipRRect(
@@ -83,8 +82,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                               const SizedBox(width: 10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
                                     width: 160,

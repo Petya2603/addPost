@@ -1,5 +1,5 @@
 // ignore_for_file: file_names
-import 'package:addpost/Screens/category_screens/components/product_card_screen.dart';
+import 'package:addpost/screens/category_screens/components/product_card_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -28,47 +28,43 @@ class PostPage extends StatelessWidget {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, top: 5, bottom: 10),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+      body: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 10),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductCardScreen(imageUrl: imageUrl),
                 ),
-              ),
+              );
+            },
+            child: ExtendedImage.network(
+              imageUrl,
+              fit: BoxFit.contain,
+              width: double.infinity,
+              height: 250,
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProductCardScreen(imageUrl: imageUrl),
-                  ),
-                );
-              },
-              child: ExtendedImage.network(
-                imageUrl,
-                fit: BoxFit.contain,
-                width: double.infinity,
-                height: 250,
-              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            child: Text(
+              description,
+              style: const TextStyle(fontSize: 17),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, top: 10, bottom: 10),
-              child: Text(
-                description,
-                style: const TextStyle(fontSize: 17),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

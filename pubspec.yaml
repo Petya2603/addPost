@@ -1,17 +1,12 @@
 name: addpost
 description: "A new Flutter project."
-
 publish_to: 'none'
-
 version: 1.0.0+1
-
 environment:
   sdk: '>=3.3.3 <4.0.0'
-
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8 
   firebase_core: 
   get: ^4.6.6
@@ -26,26 +21,29 @@ dependencies:
   dio: ^5.7.0
   video_thumbnail: ^0.5.0
   video_compress: 
-
-
-
-
   video_player: any
   path_provider: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^4.0.0
-
-
 flutter:
-  uses-material-design: true
   assets:
     - assets/images/
     - assets/icons/
 
   fonts:
-    - family: Gilroy
+    - family: GilroyBold
       fonts:
         - asset: assets/font/Gilroy-Bold.ttf
+    - family: GilroySemiBold
+      fonts:
+        - asset: assets/font/Gilroy-SemiBold.ttf
+    - family: GilroyMedium
+      fonts:
+        - asset: assets/font/Gilroy-Medium.ttf
+    - family: GilroyRegular
+      fonts:
+        - asset: assets/font/Gilroy-Regular.ttf
+  uses-material-design: true
+  generate: true
