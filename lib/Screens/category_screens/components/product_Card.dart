@@ -1,12 +1,11 @@
 // ignore_for_file: file_names
 import 'package:addpost/screens/category_screens/components/product_card_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PostPage extends StatelessWidget {
-  PostPage({
+  const PostPage({
     super.key,
     required this.imageUrl,
     required this.title,
@@ -15,7 +14,6 @@ class PostPage extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String description;
-  final firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {

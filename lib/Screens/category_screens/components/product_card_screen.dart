@@ -8,33 +8,35 @@ class ProductCardScreen extends StatelessWidget {
   final String imageUrl;
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Center(
-          child: InteractiveViewer(
-            panEnabled: true,
-            minScale: 0.5,
-            maxScale: 4.0,
-            scaleEnabled: true,
-            child: ExtendedImage.network(
-              imageUrl,
-              fit: BoxFit.contain,
-              width: double.infinity,
-              height: double.infinity,
+    return Scaffold(
+      body: Stack(
+        children: [
+          Center(
+            child: InteractiveViewer(
+              panEnabled: true,
+              minScale: 0.5,
+              maxScale: 4.0,
+              scaleEnabled: true,
+              child: ExtendedImage.network(
+                imageUrl,
+                fit: BoxFit.contain,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
           ),
-        ),
-        Positioned(
-          left: 15,
-          top: 10,
-          child: IconButton(
-            icon: Icon(Icons.arrow_back, color: grey2),
-            onPressed: () {
-              Get.back();
-            },
-          ),
-        )
-      ],
+          Positioned(
+            left: 15,
+            top: 10,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: grey2),
+              onPressed: () {
+                Get.back();
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

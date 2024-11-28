@@ -1,6 +1,5 @@
+import 'package:addpost/config/cards/banner_cards.dart';
 import 'package:addpost/config/constants/widgets.dart';
-import 'package:addpost/screens/category_screens/components/audio_player_card.dart';
-import 'package:addpost/screens/category_screens/components/video_player_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -40,24 +39,25 @@ class CategoryContent extends StatelessWidget {
   Widget buildCategoryCard(String categoryId, Map<String, dynamic> data, int index) {
     switch (categoryId) {
       case '1':
-        return const Text("ad");
-      // BannerCARD(
-      //   bannerData: data,
-      // );
+        return BannerCARD(
+          bannerData: data,
+        );
       case '2':
-        return VideoCard(
-          videoUrl: data['video'][0],
-          text: data['name'],
-          time: data['time'],
-        );
+        return const Text("ad");
+      //  VideoCard(
+      //   videoUrl: data['video'][0],
+      //   text: data['name'],
+      //   time: data['time'],
+      // );
       case '3':
-        return AudioCard(
-          audioUrl: data['music'][0],
-          title: data['name'],
-          image: data['image'][0],
-          desc: data['desc'],
-          index: index,
-        );
+        return const Text("ad");
+      //  AudioCard(
+      //   audioUrl: data['music'][0],
+      //   title: data['name'],
+      //   image: data['image'][0],
+      //   desc: data['desc'],
+      //   index: index,
+      // );
       default:
         return const Card(
           child: ListTile(
