@@ -26,12 +26,9 @@ dependencies:
   dio: ^5.7.0
   video_thumbnail: ^0.5.0
   video_compress: 
-
-
-
-
   video_player: any
   path_provider: any
+  infinite_scroll_pagination: ^4.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

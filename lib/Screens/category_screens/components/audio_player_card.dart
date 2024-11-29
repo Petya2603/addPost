@@ -19,13 +19,13 @@ class AudioCard extends StatefulWidget {
   final int index;
 
   const AudioCard({
-    Key? key,
+    super.key,
     required this.audioUrl,
     required this.title,
     required this.image,
     required this.desc,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -172,7 +172,6 @@ class _AudioCardState extends State<AudioCard> {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String savePath =
           '${appDocDir.path}/audio${DateTime.now().millisecondsSinceEpoch}.mp3';
-
       await _dio.download(widget.audioUrl, savePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
@@ -191,7 +190,7 @@ class _AudioCardState extends State<AudioCard> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Аудио загружено на ${widget.title}')),
+        SnackBar(content: Text('Аудио загружено на ${widget.title}.mp3')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

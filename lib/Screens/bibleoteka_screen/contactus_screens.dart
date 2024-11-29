@@ -87,7 +87,7 @@ class ContactUsScreen extends StatelessWidget {
                     backgroundColor: orange,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  onPressed: sendContactUsData,
+                  onPressed: sendContactUsData, 
                   child: Text(
                     'Отправить',
                     style: TextStyle(fontSize: 18, color: white),

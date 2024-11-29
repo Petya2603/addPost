@@ -7,36 +7,74 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-class CategoryContent extends StatelessWidget {
-  CategoryContent({
+class CategoryContent extends StatefulWidget {
+  const CategoryContent({
     super.key,
     required this.categoryname,
   });
-  final firestore = FirebaseFirestore.instance;
   final String categoryname;
+
+  @override
+  State<CategoryContent> createState() => _CategoryContentState();
+}
+
+class _CategoryContentState extends State<CategoryContent> {
+  final firestore = FirebaseFirestore.instance;
+  static const _pageSize = 5;
+  final PagingController<DocumentSnapshot?, DocumentSnapshot>
+      _pagingController = PagingController(firstPageKey: null);
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+  }
+
+  Future<void> _fetchPage(DocumentSnapshot? pageKey) async {
+    try {
+      Query query = FirebaseFirestore.instance
+          .collection(widget.categoryname)
+          .orderBy('timestamp', descending: true)
+          .limit(_pageSize);
+      if (pageKey != null) {
+        query = query.startAfterDocument(pageKey);
+      }
+
+      final newPage = await query.get();
+      final isLastPage = newPage.docs.length < _pageSize;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newPage.docs);
+      } else {
+        _pagingController.appendPage(newPage.docs, newPage.docs.last);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<QuerySnapshot>(
-      future: firestore.collection(categoryname).get(),
-      builder: (context, collectionSnapshot) {
-        if (collectionSnapshot.hasError) {
-          return const Center(child: Text("Error"));
-        } else if (collectionSnapshot.connectionState ==
-            ConnectionState.waiting) {
-          return Center(child: spinKit());
-        }
-        final documents = collectionSnapshot.data?.docs ?? [];
-        return ListView.builder(
-          itemCount: documents.length,
-          itemBuilder: (context, index) {
-            var data = documents[index];
-            var categoryId = data['category']['id'];
-
+    return Scaffold(
+      body: PagedListView<DocumentSnapshot?, DocumentSnapshot>(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<DocumentSnapshot>(
+          itemBuilder: (context, document, index) {
+            final data = document.data() as Map<String, dynamic>;
+            final categoryId = data['category']['id'];
             return buildCategoryCard(categoryId, data, index);
           },
-        );
-      },
+        ),
+      ),
     );
   }
 
