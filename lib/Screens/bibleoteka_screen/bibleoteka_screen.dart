@@ -1,8 +1,8 @@
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/download_audi.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/download_video.dart';
-import 'package:addpost/Screens/bibleoteka_screen/bibliotekaController.dart';
-import 'package:addpost/Screens/bibleoteka_screen/contactus_screens.dart';
+import 'package:addpost/config/theme/theme.dart';
+import 'package:addpost/screens/bibleoteka_screen/bibliotekaController.dart';
+import 'package:addpost/screens/bibleoteka_screen/components/download_audi.dart';
+import 'package:addpost/screens/bibleoteka_screen/components/download_video.dart';
+import 'package:addpost/screens/bibleoteka_screen/contactus_screens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,11 +17,6 @@ class BibliotekaScreen extends StatefulWidget {
 class _BibliotekaScreenState extends State<BibliotekaScreen> {
   final BibliotekaController bibliotekaController =
       Get.put(BibliotekaController());
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   final firestore = FirebaseFirestore.instance;
   @override
@@ -41,7 +36,7 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Get.to( ContactUsScreen());
+              Get.to(ContactUsScreen());
             },
             style: TextButton.styleFrom(foregroundColor: orange),
             child: const Text('Связаться с нами'),
@@ -50,6 +45,9 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
         bottom: TabBar(
           isScrollable: false,
           dividerColor: white,
+          indicatorSize: TabBarIndicatorSize.tab,
+          // overlayColor: WidgetStateProperty.all(Colors.transparent),
+          indicatorColor: orange,
           controller: bibliotekaController.tabController,
           unselectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.bold,
@@ -62,23 +60,17 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
           indicator: BoxDecoration(
             color: orange,
           ),
-          tabs: [
-            SizedBox(width: Get.width, child: const Tab(text: 'Видео')),
-            SizedBox(width: Get.width, child: const Tab(text: 'Музыка')),
+          tabs: const [
+            Tab(text: 'Видео'),
+            Tab(text: 'Музыка'),
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: TabBarView(
-              controller: bibliotekaController.tabController,
-              children: const [
-                DownloadedVideosPage(),
-                DownloadedAudiosPage(),
-              ],
-            ),
-          ),
+      body: TabBarView(
+        controller: bibliotekaController.tabController,
+        children: const [
+          DownloadedVideosPage(),
+          DownloadedAudiosPage(),
         ],
       ),
     );
