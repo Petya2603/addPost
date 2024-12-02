@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:addpost/Config/constants/constants.dart';
+import 'package:addpost/Config/constants/widgets.dart';
 import 'package:addpost/Screens/category_screens/category_content.dart';
-import 'package:addpost/config/constants/constants.dart';
-import 'package:addpost/config/constants/widgets.dart';
 import 'package:addpost/config/theme/theme.dart';
 import 'package:addpost/screens/bibleoteka_screen/bibleoteka_screen.dart';
 import 'package:addpost/screens/home/home_controller.dart';
@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
