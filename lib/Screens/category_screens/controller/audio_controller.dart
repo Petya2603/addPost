@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class AudioController extends GetxController {
   late AudioPlayer audioPlayer;
   RxBool isPlaying = false.obs;
+  RxBool isLoading = false.obs;
   Rx<Duration> duration = Duration.zero.obs;
   Rx<Duration> position = Duration.zero.obs;
 

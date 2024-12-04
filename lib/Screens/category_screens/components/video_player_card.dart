@@ -14,12 +14,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-class VideoCard extends StatefulWidget {
+class VideoCardd extends StatefulWidget {
   final String videoUrl;
   final String text;
   final String time;
 
-  const VideoCard({
+  const VideoCardd({
     super.key,
     required this.videoUrl,
     required this.text,
@@ -30,7 +30,7 @@ class VideoCard extends StatefulWidget {
   VideoCardState createState() => VideoCardState();
 }
 
-class VideoCardState extends State<VideoCard> {
+class VideoCardState extends State<VideoCardd> {
   late FlickManager _controller;
   final firestore = FirebaseFirestore.instance;
   var isDownloading = false;
@@ -182,8 +182,6 @@ class VideoCardState extends State<VideoCard> {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String savePath =
           '${appDocDir.path}/video${DateTime.now().millisecondsSinceEpoch}.mp4';
-
-      // Video dosyasını olduğu gibi indiriyoruz, compress işlemi yok.
       await _dio.download(widget.videoUrl, savePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
@@ -192,8 +190,6 @@ class VideoCardState extends State<VideoCard> {
           });
         }
       });
-
-      // Thumbnail oluşturuyoruz.
       final thumbnailPath = await VideoThumbnail.thumbnailFile(
         video: savePath,
         thumbnailPath: (await getTemporaryDirectory()).path,
@@ -201,8 +197,6 @@ class VideoCardState extends State<VideoCard> {
         maxWidth: 128,
         quality: 75,
       );
-
-      // Videoyu Hive’a kaydediyoruz.
       var box = Hive.box('downloadedVideos');
       await box.add({
         'path': savePath,
@@ -210,7 +204,6 @@ class VideoCardState extends State<VideoCard> {
         'thumbnail': thumbnailPath,
       });
 
-      // Kullanıcıya indirme bildirimi.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Video downloaded to ${widget.text}')),
       );
@@ -223,7 +216,6 @@ class VideoCardState extends State<VideoCard> {
         isDownloading = false;
         downloadProgress = 0.0;
       });
-      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     }
   }

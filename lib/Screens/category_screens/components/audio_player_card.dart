@@ -11,14 +11,14 @@ import '../../../Config/constants/constants.dart';
 import '../../../Config/theme/theme.dart';
 import '../controller/audio_controller.dart';
 
-class AudioCard extends StatefulWidget {
+class AudioCardd extends StatefulWidget {
   final String audioUrl;
   final String title;
   final String image;
   final String desc;
   final int index;
 
-  const AudioCard({
+  const AudioCardd({
     super.key,
     required this.audioUrl,
     required this.title,
@@ -32,7 +32,7 @@ class AudioCard extends StatefulWidget {
   _AudioCardState createState() => _AudioCardState();
 }
 
-class _AudioCardState extends State<AudioCard> {
+class _AudioCardState extends State<AudioCardd> {
   late Dio _dio;
   bool isDownloading = false;
   double downloadProgress = 0.0;

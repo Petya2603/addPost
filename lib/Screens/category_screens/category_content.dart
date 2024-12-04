@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../../Config/cards/banner_cards.dart';
+import '../../Config/cards/video_cards.dart';
 
 class CategoryContent extends StatelessWidget {
   CategoryContent({
@@ -40,12 +40,12 @@ class CategoryContent extends StatelessWidget {
           bannerData: data,
         );
       case '2':
-        return Text("Video");
-      // return VideoCard(
-      //   videoUrl: data['video'][0],
-      //   text: data['name'],
-      //   time: data['time'],
-      // );
+        // return Text("Video");
+        return VideoCard(
+          videoUrl: data['video'][0],
+          text: data['name'],
+          time: data['time'],
+        );
       case '3':
         return Text("Audio");
       // return AudioCard(
