@@ -9,16 +9,16 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../Config/constants/constants.dart';
 import '../../../Config/theme/theme.dart';
-import '../controller/audio_controller.dart';
+import '../../screens/category_screens/controller/audio_controller.dart';
 
-class AudioCardd extends StatefulWidget {
+class AudioCard extends StatefulWidget {
   final String audioUrl;
   final String title;
   final String image;
   final String desc;
   final int index;
 
-  const AudioCardd({
+  const AudioCard({
     super.key,
     required this.audioUrl,
     required this.title,
@@ -32,7 +32,7 @@ class AudioCardd extends StatefulWidget {
   _AudioCardState createState() => _AudioCardState();
 }
 
-class _AudioCardState extends State<AudioCardd> {
+class _AudioCardState extends State<AudioCard> {
   late Dio _dio;
   bool isDownloading = false;
   double downloadProgress = 0.0;
@@ -180,6 +180,7 @@ class _AudioCardState extends State<AudioCardd> {
           });
         }
       });
+
       var box = Hive.box('downloadedAudios');
       await box.add({
         'path': savePath,
@@ -292,7 +293,7 @@ class _AudioCardState extends State<AudioCardd> {
                   ),
                 ),
               ],
-            ),  
+            ),
           ),
           const SizedBox(width: 12),
           Column(
