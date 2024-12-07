@@ -1,5 +1,5 @@
+import 'package:addpost/config/constants/constants.dart';
 import 'package:addpost/config/constants/widgets.dart';
-import 'package:addpost/config/theme/theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -21,24 +21,21 @@ class ContactUsScreen extends StatelessWidget {
         nameController.clear();
         contactController.clear();
         messageController.clear();
-        print("Data sent successfully");
       } catch (e) {
-        print("$e");
+        return;
       }
-    } else {
-      print("All fields are required");
-    }
+    } else {}
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           children: [
             Text(
               'Связаться с нами',
-              style: TextStyle(color: black),
+              style: TextStyle(color: AppColors.black),
             ),
           ],
         ),
@@ -78,13 +75,13 @@ class ContactUsScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: orange,
+                    backgroundColor: AppColors.orange,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: sendContactUsData,
-                  child: Text(
+                  child: const Text(
                     'Отправить',
-                    style: TextStyle(fontSize: 18, color: white),
+                    style: TextStyle(fontSize: 18, color: AppColors.white),
                   ),
                 ),
               ),

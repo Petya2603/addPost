@@ -11,6 +11,7 @@ dependencies:
   firebase_core: 
   get: ^4.6.6
   cloud_firestore: ^5.4.0 
+  lottie:
   extended_image: ^8.2.4 
   flutter_svg: ^2.0.10+1 
   flick_video_player: ^0.5.0
@@ -31,6 +32,8 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/font/
+    - assets/animations/
 
   fonts:
     - family: GilroyBold

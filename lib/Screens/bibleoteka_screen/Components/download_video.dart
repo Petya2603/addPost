@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
-import 'package:addpost/config/theme/theme.dart';
-import 'package:addpost/screens/bibleoteka_screen/components/VideoPlayerScreen.dart';
+import 'package:addpost/config/constants/constants.dart';
+import 'package:addpost/screens/bibleoteka_screen/components/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -54,7 +54,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                   },
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 3),
-                    color: music,
+                    color: AppColors.music,
                     height: 80,
                     width: 70,
                     child: Container(
@@ -97,7 +97,7 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            color: orange,
+                            color: AppColors.orange,
                             onPressed: () => _deleteVideo(index),
                           ),
                         ],

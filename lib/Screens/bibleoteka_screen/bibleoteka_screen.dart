@@ -1,5 +1,5 @@
-import 'package:addpost/config/theme/theme.dart';
-import 'package:addpost/screens/bibleoteka_screen/bibliotekaController.dart';
+import 'package:addpost/config/constants/constants.dart';
+import 'package:addpost/screens/bibleoteka_screen/biblioteka_controller.dart';
 import 'package:addpost/screens/bibleoteka_screen/components/download_audi.dart';
 import 'package:addpost/screens/bibleoteka_screen/components/download_video.dart';
 import 'package:addpost/screens/bibleoteka_screen/contactus_screens.dart';
@@ -23,41 +23,41 @@ class _BibliotekaScreenState extends State<BibliotekaScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () {
             Get.back();
           },
         ),
-        title: Text(
+        title: const Text(
           'Библиотека',
-          style: TextStyle(color: black),
+          style: TextStyle(color: AppColors.black),
         ),
         actions: [
           TextButton(
             onPressed: () {
               Get.to(ContactUsScreen());
             },
-            style: TextButton.styleFrom(foregroundColor: orange),
+            style: TextButton.styleFrom(foregroundColor: AppColors.orange),
             child: const Text('Связаться с нами'),
           ),
         ],
         bottom: TabBar(
           isScrollable: false,
-          dividerColor: white,
+          dividerColor: AppColors.white,
           indicatorSize: TabBarIndicatorSize.tab,
           overlayColor: WidgetStateProperty.all(Colors.transparent),
-          indicatorColor: orange,
+          indicatorColor: AppColors.orange,
           controller: bibliotekaController.tabController,
           unselectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
-          labelStyle: TextStyle(
-            color: white,
+          labelStyle: const TextStyle(
+            color: AppColors.white,
             fontSize: 16,
           ),
-          indicator: BoxDecoration(
-            color: orange,
+          indicator: const BoxDecoration(
+            color: AppColors.orange,
           ),
           tabs: const [
             Tab(text: 'Видео'),

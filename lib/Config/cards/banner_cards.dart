@@ -1,8 +1,9 @@
-import 'package:addpost/Config/constants/constants.dart';
-import 'package:addpost/screens/category_screens/components/product_Card.dart';
+import 'package:addpost/screens/category_screens/banner_profile_page.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../constants/constants.dart';
 
 class BannerCARD extends StatelessWidget {
   final Map<String, dynamic> bannerData;
@@ -12,7 +13,7 @@ class BannerCARD extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Get.to(
-          () => PostPage(
+          () => BannerProfilePage(
             imageUrl: bannerData['images'][0],
             title: bannerData['name'],
             description: bannerData['desc'],
@@ -21,11 +22,11 @@ class BannerCARD extends StatelessWidget {
       },
       child: Container(
         margin: const EdgeInsets.all(8),
-        decoration: BoxDecoration(borderRadius: borderRadius30, color: Colors.amber, boxShadow: [
+        decoration: BoxDecoration(borderRadius: BorderRadii.borderRadius30, color: Colors.amber, boxShadow: [
           BoxShadow(color: Colors.grey.withOpacity(0.3), blurRadius: 5, spreadRadius: 5),
         ]),
         child: ClipRRect(
-          borderRadius: borderRadius30,
+          borderRadius: BorderRadii.borderRadius30,
           child: Stack(
             children: [
               ExtendedImage.network(
@@ -42,7 +43,7 @@ class BannerCARD extends StatelessWidget {
                     child: Text(
                       bannerData['name'],
                       maxLines: 3,
-                      style: const TextStyle(fontSize: 20, fontFamily: gilroySemiBold),
+                      style: const TextStyle(fontSize: 20, fontFamily: Fonts.gilroySemiBold),
                       overflow: TextOverflow.ellipsis,
                     )),
               ),

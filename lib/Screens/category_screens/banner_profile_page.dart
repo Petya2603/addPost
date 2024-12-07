@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
-import 'package:addpost/screens/category_screens/components/product_card_screen.dart';
+import 'package:addpost/screens/category_screens/components/photo_view_page.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class PostPage extends StatelessWidget {
-  const PostPage({
+class BannerProfilePage extends StatelessWidget {
+  const BannerProfilePage({
     super.key,
     required this.imageUrl,
     required this.title,
@@ -44,7 +44,7 @@ class PostPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProductCardScreen(imageUrl: imageUrl),
+                  builder: (context) => PhotoViewPage(imageUrl: imageUrl),
                 ),
               );
             },

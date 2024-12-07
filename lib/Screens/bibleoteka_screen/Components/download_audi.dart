@@ -1,6 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:addpost/config/theme/theme.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../../../config/constants/constants.dart';
-import '../bibliotekaController.dart';
+import '../biblioteka_controller.dart';
 
 class DownloadedAudiosPage extends StatefulWidget {
   const DownloadedAudiosPage({super.key});
@@ -63,7 +62,7 @@ class _DownloadedAudiosPageState extends State<DownloadedAudiosPage> {
                   child: Obx(
                     () => Container(
                       margin: const EdgeInsets.only(bottom: 3),
-                      color: bibliotekaController.currentlyPlayingIndex.value == index && bibliotekaController.isPlaying.value ? orange2 : music,
+                      color: bibliotekaController.currentlyPlayingIndex.value == index && bibliotekaController.isPlaying.value ? AppColors.orange2 : AppColors.music,
                       height: 80,
                       width: 70,
                       child: Container(
@@ -87,7 +86,7 @@ class _DownloadedAudiosPageState extends State<DownloadedAudiosPage> {
                                     : ClipRRect(
                                         borderRadius: BorderRadius.circular(2.0),
                                         child: Image.asset(
-                                          downloadmusic,
+                                          Assets.downloadMusic,
                                           width: 85,
                                           height: 70,
                                           fit: BoxFit.cover,
@@ -106,13 +105,13 @@ class _DownloadedAudiosPageState extends State<DownloadedAudiosPage> {
                                     width: 140,
                                     child: Text(
                                       audio['desc'],
-                                      style: TextStyle(fontSize: 12, color: grey2),
+                                      style: const TextStyle(fontSize: 12, color: AppColors.grey2),
                                     )),
                               ]),
                             ]),
                             IconButton(
                               icon: const Icon(Icons.delete),
-                              color: orange,
+                              color: AppColors.orange,
                               onPressed: () => _deleteAudio(index),
                             ),
                           ],
