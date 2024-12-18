@@ -1,6 +1,5 @@
 import 'package:addpost/Config/constants/constants.dart';
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/home/homescreen.dart';
+import 'package:addpost/Screens/home/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,15 +21,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-        scaffoldBackgroundColor: white,
-        primaryColor: orange,
-        fontFamily: gilroyRegular,
-        appBarTheme: AppBarTheme(
-          backgroundColor: white,
+        scaffoldBackgroundColor: AppColors.white,
+        primaryColor: AppColors.orange,
+        fontFamily: Fonts.gilroyRegular,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: AppColors.white,
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const HomeView(),
     );
   }
 }

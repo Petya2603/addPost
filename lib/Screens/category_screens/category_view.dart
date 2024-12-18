@@ -1,12 +1,11 @@
-import 'package:addpost/screens/category_screens/components/audio_player_card.dart';
+import 'package:addpost/Config/cards/audio_player_card.dart';
+import 'package:addpost/config/cards/banner_cards.dart';
+import 'package:addpost/config/cards/video_player_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../../Config/cards/audio_cards.dart';
-import '../../Config/cards/banner_cards.dart';
-import '../../Config/cards/video_cards.dart';
 
-class CategoryContent extends StatelessWidget {
-  CategoryContent({
+class CategoryView extends StatelessWidget {
+  CategoryView({
     super.key,
     required this.categoryname,
     required this.documents,
@@ -35,7 +34,7 @@ class CategoryContent extends StatelessWidget {
   }
 
   Widget buildCategoryCard(
-      String categoryId, Map<String, dynamic> data, int index) {
+      String? categoryId, Map<String, dynamic> data, int index) {
     switch (categoryId) {
       case '1':
         return BannerCARD(
@@ -58,7 +57,7 @@ class CategoryContent extends StatelessWidget {
       default:
         return const Card(
           child: ListTile(
-            title: Text('Kategori yok'),
+            title: Text('No category'),
           ),
         );
     }

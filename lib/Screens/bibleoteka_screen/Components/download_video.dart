@@ -1,10 +1,11 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:addpost/Config/theme/theme.dart';
-import 'package:addpost/Screens/bibleoteka_screen/Components/VideoPlayerScreen.dart';
+import 'dart:io';
+
+import 'package:addpost/config/constants/constants.dart';
+import 'package:addpost/screens/bibleoteka_screen/components/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'dart:io';
 
 class DownloadedVideosPage extends StatefulWidget {
   const DownloadedVideosPage({super.key});
@@ -46,60 +47,76 @@ class _DownloadedVideosPageState extends State<DownloadedVideosPage> {
                       MaterialPageRoute(
                         builder: (context) => VideoPlayerScreen(
                           videoPath: video['path'],
-                          text: video['name'][0],
+                          text: video['name'],
                         ),
                       ),
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 3),
-                    color: music,
-                    height: 80,
-                    width: 70,
-                    child: Container(
-                      margin:
-                          const EdgeInsets.only(left: 13, right: 13, top: 5),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          blurRadius: 5,
+                          spreadRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (video['thumbnail'] != null)
-                                Container(
-                                  margin:
-                                      const EdgeInsets.only(left: 10, right: 5),
-                                  width: 85,
-                                  height: 70,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(2.0),
-                                    child: Image.file(
-                                      File(video['thumbnail']),
-                                      fit: BoxFit.cover,
-                                    ),
+                          if (video['thumbnail'] != null)
+                            Stack(
+                              alignment: Alignment.center, // İçerikleri ortalar
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  child: Image.file(
+                                    File(video['thumbnail']),
+                                    width: 85,
+                                    height: 70,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 160,
-                                    child: Text(
-                                      video['name'][0],
-                                      style: const TextStyle(fontSize: 14),
-                                    ),
+                                Icon(
+                                  Icons.play_circle_fill,
+                                  color: AppColors.grey1
+                                      .withOpacity(0.8), // Butonun rengi
+                                  size: 30, // Buton boyutu
+                                ),
+                              ],
+                            ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  video['name'],
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: Fonts.gilroyBold),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  video['description'] ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: AppColors.grey1,
                                   ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete),
-                            color: orange,
+                            color: AppColors.orange,
                             onPressed: () => _deleteVideo(index),
                           ),
                         ],
