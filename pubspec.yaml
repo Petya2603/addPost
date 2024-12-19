@@ -31,7 +31,6 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/font/
-    - assets/animations/
 
   fonts:
     - family: GilroyBold

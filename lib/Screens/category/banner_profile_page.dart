@@ -1,5 +1,5 @@
 // ignore_for_file: file_names
-import 'package:addpost/screens/category_screens/components/photo_view_page.dart';
+import 'package:addpost/Screens/category/components/photo_view_page.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

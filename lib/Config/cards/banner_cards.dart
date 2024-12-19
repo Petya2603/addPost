@@ -1,8 +1,8 @@
-import 'package:addpost/screens/category_screens/banner_profile_page.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Screens/category/banner_profile_page.dart';
 import '../constants/constants.dart';
 
 class BannerCARD extends StatelessWidget {

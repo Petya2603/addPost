@@ -1,8 +1,8 @@
+import 'package:addpost/Screens/bibleoteka/biblioteka_controller.dart';
 import 'package:addpost/config/constants/constants.dart';
-import 'package:addpost/Screens/bibleoteka_screen/components/download_audi.dart';
-import 'package:addpost/Screens/bibleoteka_screen/components/download_video.dart';
-import 'package:addpost/Screens/bibleoteka_screen/contactus_screens.dart';
-import 'package:addpost/screens/bibleoteka_screen/biblioteka_controller.dart';
+import 'package:addpost/Screens/bibleoteka/components/download_audi.dart';
+import 'package:addpost/Screens/bibleoteka/components/download_video.dart';
+import 'package:addpost/Screens/bibleoteka/contactus_screens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

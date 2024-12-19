@@ -9,9 +9,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-
+import '../../Screens/category/controller/audio_controller.dart';
 import '../../config/constants/constants.dart';
-import '../../screens/category_screens/controller/audio_controller.dart';
+
 
 class AudioCard extends StatefulWidget {
   final String audioUrl;
@@ -36,8 +36,8 @@ class AudioCard extends StatefulWidget {
 
 class _AudioCardState extends State<AudioCard> {
   late AudioController audioController;
-  var isDownloading = false;
-  var downloadProgress = 0.0;
+  var isDownloading = false.obs;
+  var downloadProgress = 0.0.obs;
   late Dio _dio;
 
   @override
@@ -111,9 +111,7 @@ class _AudioCardState extends State<AudioCard> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    setState(() {
-                      isDownloading = true;
-                    });
+                    isDownloading.value = true;
                     _downloadAndSaveAudio();
                   },
                   child: const Text(
@@ -141,9 +139,7 @@ class _AudioCardState extends State<AudioCard> {
       await _dio.download(widget.audioUrl, savePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
-          setState(() {
-            downloadProgress = received / total;
-          });
+          downloadProgress.value = received / total;
         }
       });
 
@@ -160,10 +156,8 @@ class _AudioCardState extends State<AudioCard> {
       showSnackBar("Error", "Error: $e", AppColors.grey1);
       print(e);
     } finally {
-      setState(() {
-        isDownloading = false;
-        downloadProgress = 0.0;
-      });
+      isDownloading.value = false;
+      downloadProgress.value = 0.0;
     }
   }
 
@@ -273,32 +267,34 @@ class _AudioCardState extends State<AudioCard> {
                     onPressed: () => AudioManager.playPauseAudio(
                         widget.audioUrl, widget.index),
                   )),
-              isDownloading
-                  ? Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        const CircularProgressIndicator(
-                          color: AppColors.orange,
-                          strokeWidth: 4,
-                        ),
-                        Text(
-                          '${(downloadProgress * 100).toStringAsFixed(0)}%', // Yüzde metni
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
+              Obx(() {
+                return isDownloading.value
+                    ? Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          const CircularProgressIndicator(
                             color: AppColors.orange,
+                            strokeWidth: 4,
                           ),
+                          Text(
+                            '${(downloadProgress.value * 100).toStringAsFixed(0)}%', // Yüzde metni
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.orange,
+                            ),
+                          ),
+                        ],
+                      )
+                    : IconButton(
+                        icon: SvgPicture.asset(
+                          Assets.download,
+                          colorFilter: const ColorFilter.mode(
+                              AppColors.orange, BlendMode.srcIn),
                         ),
-                      ],
-                    )
-                  : IconButton(
-                      icon: SvgPicture.asset(
-                        Assets.download,
-                        colorFilter: const ColorFilter.mode(
-                            AppColors.orange, BlendMode.srcIn),
-                      ),
-                      onPressed: _showDownloadConfirmationDialog,
-                    ),
+                        onPressed: _showDownloadConfirmationDialog,
+                      );
+              }),
             ],
           ),
         ],

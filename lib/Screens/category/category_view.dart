@@ -9,27 +9,41 @@ class CategoryView extends StatelessWidget {
     super.key,
     required this.categoryname,
     required this.documents,
+    required this.loadMore,
   });
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final String categoryname;
   final List<DocumentSnapshot> documents;
+  final VoidCallback loadMore;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: documents.length,
-      itemBuilder: (context, index) {
-        Map<String, dynamic>? data =
-            documents[index].data() as Map<String, dynamic>?;
-        if (data == null ||
-            data['category'] == null ||
-            data['category']['id'] == null) {
-          return const Center(child: Text('В этой категории нет информации'));
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels ==
+            scrollInfo.metrics.maxScrollExtent) {
+          loadMore();
         }
-        String categoryId = data['category']['id'];
-
-        return buildCategoryCard(categoryId, data, index);
+        return true;
       },
+      child: ListView.builder(
+        itemCount: documents.length + 1,
+        itemBuilder: (context, index) {
+          if (index == documents.length) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          Map<String, dynamic>? data =
+              documents[index].data() as Map<String, dynamic>?;
+          if (data == null ||
+              data['category'] == null ||
+              data['category']['id'] == null) {
+            return const Center(child: Text('В этой категории нет информации'));
+          }
+          String categoryId = data['category']['id'];
+
+          return buildCategoryCard(categoryId, data, index);
+        },
+      ),
     );
   }
 

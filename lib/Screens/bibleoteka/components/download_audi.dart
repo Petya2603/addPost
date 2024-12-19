@@ -1,4 +1,4 @@
-import 'package:addpost/screens/bibleoteka_screen/biblioteka_controller.dart';
+import 'package:addpost/Screens/bibleoteka/biblioteka_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';

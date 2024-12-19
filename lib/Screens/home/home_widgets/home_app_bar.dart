@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../Config/constants/constants.dart';
-import '../../bibleoteka_screen/bibleoteka_screen.dart';
+import '../../bibleoteka/bibleoteka_screen.dart';
 
 AppBar buildAppBar() {
   return AppBar(

@@ -9,7 +9,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-import '../../Screens/category_screens/components/video_view_page.dart';
+import '../../Screens/category/components/video_view_page.dart';
 import '../constants/constants.dart';
 
 class VideoCard extends StatefulWidget {
@@ -33,8 +33,8 @@ class VideoCardState extends State<VideoCard>
   @override
   bool get wantKeepAlive => true;
   String? _thumbnailPath;
-  bool isDownloading = false;
-  double downloadProgress = 0.0;
+  var isDownloading = false.obs;
+  var downloadProgress = 0.0.obs;
   late Dio _dio;
 
   @override
@@ -94,9 +94,7 @@ class VideoCardState extends State<VideoCard>
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  setState(() {
-                    isDownloading = true;
-                  });
+                  isDownloading.value = true;
                   _downloadAndSaveVideo();
                 },
                 child: const Text(
@@ -124,9 +122,7 @@ class VideoCardState extends State<VideoCard>
       await _dio.download(widget.videoUrl, savePath,
           onReceiveProgress: (received, total) {
         if (total != -1) {
-          setState(() {
-            downloadProgress = received / total;
-          });
+          downloadProgress.value = received / total;
         }
       });
       final thumbnailPath = await VideoThumbnail.thumbnailFile(
@@ -142,15 +138,12 @@ class VideoCardState extends State<VideoCard>
         'name': widget.text,
         'thumbnail': thumbnailPath,
       });
-
       showSnackBar("Done", "Видео загружено на ", Colors.green);
     } catch (e) {
       showSnackBar("Error", "Error: $e", Colors.red);
     } finally {
-      setState(() {
-        isDownloading = false;
-        downloadProgress = 0.0;
-      });
+      isDownloading.value = false;
+      downloadProgress.value = 0.0;
     }
   }
 
@@ -163,9 +156,7 @@ class VideoCardState extends State<VideoCard>
         maxHeight: 250,
         quality: 75,
       );
-      setState(() {
-        _thumbnailPath = path;
-      });
+      _thumbnailPath = path;
     } catch (e) {
       print("Thumbnail oluşturulamadı: $e");
     }
@@ -207,32 +198,34 @@ class VideoCardState extends State<VideoCard>
               Positioned(
                 top: 10,
                 right: 10,
-                child: isDownloading
-                    ? Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          const CircularProgressIndicator(
-                            color: AppColors.orange,
-                            strokeWidth: 4,
-                          ),
-                          Text(
-                            '${(downloadProgress * 100).toStringAsFixed(0)}%', // Yüzde metni
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
+                child: Obx(() {
+                  return isDownloading.value
+                      ? Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            const CircularProgressIndicator(
                               color: AppColors.orange,
+                              strokeWidth: 4,
                             ),
+                            Text(
+                              '${(downloadProgress.value * 100).toStringAsFixed(0)}%', // Yüzde metni
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.orange,
+                              ),
+                            ),
+                          ],
+                        )
+                      : IconButton(
+                          onPressed: _showDownloadConfirmationDialog,
+                          icon: SvgPicture.asset(
+                            Assets.download,
+                            colorFilter: const ColorFilter.mode(
+                                AppColors.orange, BlendMode.srcIn),
                           ),
-                        ],
-                      )
-                    : IconButton(
-                        onPressed: _showDownloadConfirmationDialog,
-                        icon: SvgPicture.asset(
-                          Assets.download,
-                          colorFilter: const ColorFilter.mode(
-                              AppColors.orange, BlendMode.srcIn),
-                        ),
-                      ),
+                        );
+                }),
               ),
               const Center(
                 child: Icon(

@@ -2,8 +2,8 @@
 
 import 'dart:io';
 
+import 'package:addpost/Screens/bibleoteka/components/video_player_screen.dart';
 import 'package:addpost/config/constants/constants.dart';
-import 'package:addpost/screens/bibleoteka_screen/components/video_player_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

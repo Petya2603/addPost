@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../../../Config/constants/constants.dart';
 import '../controller/video_controller.dart';
 
@@ -22,7 +20,6 @@ class VideoViewPage extends StatefulWidget {
 
 class _VideoViewPageState extends State<VideoViewPage> {
   final videoController = Get.put(VideoController());
-  bool isVideoInitialized = false;
 
   @override
   void initState() {
@@ -37,14 +34,11 @@ class _VideoViewPageState extends State<VideoViewPage> {
           ..setLooping(true)
           ..setVolume(1.0);
     await videoController.videoPlayerController.initialize().then((_) {
-      setState(() {
-        isVideoInitialized = true;
-      });
+      videoController.isVideoInitialized.value = true;
       videoController.videoPlayerController.play();
+      videoController.isVideoPlaying.value = true; // Update play button state
     }).catchError((error) {
-      setState(() {
-        isVideoInitialized = false;
-      });
+      videoController.isVideoInitialized.value = false;
     });
   }
 
@@ -55,27 +49,29 @@ class _VideoViewPageState extends State<VideoViewPage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: isVideoInitialized
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AspectRatio(
-                    aspectRatio:
-                        videoController.videoPlayerController.value.aspectRatio,
-                    child: VideoPlayer(videoController.videoPlayerController),
-                  ),
-                  VideoProgressIndicator(
-                    videoController.videoPlayerController,
-                    allowScrubbing: true,
-                    colors: VideoProgressColors(
-                      playedColor: AppColors.orange,
-                      backgroundColor: Colors.grey,
-                      bufferedColor: AppColors.orange.withOpacity(0.5),
+        child: Obx(() {
+          return videoController.isVideoInitialized.value
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: videoController
+                          .videoPlayerController.value.aspectRatio,
+                      child: VideoPlayer(videoController.videoPlayerController),
                     ),
-                  ),
-                ],
-              )
-            : const CircularProgressIndicator(),
+                    VideoProgressIndicator(
+                      videoController.videoPlayerController,
+                      allowScrubbing: true,
+                      colors: VideoProgressColors(
+                        playedColor: AppColors.orange,
+                        backgroundColor: Colors.grey,
+                        bufferedColor: AppColors.orange.withOpacity(0.5),
+                      ),
+                    ),
+                  ],
+                )
+              : const CircularProgressIndicator();
+        }),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.white,
@@ -85,7 +81,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
             videoController.isVideoPlaying.value
                 ? Icons.pause
                 : Icons.play_arrow,
-            color: Colors.black, // Icon rengi
+            color: Colors.black,
           );
         }),
       ),

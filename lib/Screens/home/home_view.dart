@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:addpost/Config/constants/widgets.dart';
-import 'package:addpost/Screens/category_screens/category_view.dart';
+import 'package:addpost/Screens/category/category_view.dart';
 import 'package:addpost/Screens/home/home_widgets/home_app_bar.dart';
 import 'package:addpost/screens/home/controller/home_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,11 +18,12 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
-  TabController? tabController;
   final firestore = FirebaseFirestore.instance;
   final HomeController homeController = Get.put(HomeController());
   List<QueryDocumentSnapshot<Map<String, dynamic>>> categoryDocuments = [];
   Map<String, List<DocumentSnapshot>> categoryData = {};
+  final int _limit = 7; 
+  final Map<String, DocumentSnapshot?> _lastDocuments = {};
 
   @override
   void initState() {
@@ -30,17 +31,32 @@ class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
     checkConnection();
   }
 
-  Stream<void> _initializeCategoryStream() async* {
+  Future<void> _initializeCategoryStream() async {
     try {
       final querySnapshot = await firestore.collection('Category').get();
       categoryDocuments = querySnapshot.docs;
       for (var doc in categoryDocuments) {
         final categoryName = doc['name'];
-        final categorySnapshot = await firestore.collection(categoryName).get();
-        categoryData[categoryName] = categorySnapshot.docs;
+        await _loadCategoryData(categoryName);
       }
     } catch (error) {
       rethrow;
+    }
+  }
+
+  Future<void> _loadCategoryData(String categoryName) async {
+    Query query = firestore.collection(categoryName).limit(_limit);
+    if (_lastDocuments[categoryName] != null) {
+      query = query.startAfterDocument(_lastDocuments[categoryName]!);
+    }
+    final querySnapshot = await query.get();
+    if (querySnapshot.docs.isNotEmpty) {
+      _lastDocuments[categoryName] = querySnapshot.docs.last;
+      if (categoryData.containsKey(categoryName)) {
+        categoryData[categoryName]!.addAll(querySnapshot.docs);
+      } else {
+        categoryData[categoryName] = querySnapshot.docs;
+      }
     }
   }
 
@@ -62,52 +78,55 @@ class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
   }
 
   @override
-  void dispose() {
-    tabController?.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(),
-      body: StreamBuilder<void>(
-        stream: _initializeCategoryStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(child: Text("Error loading categories"));
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return spinKit();
-          }
-          tabController =
-              TabController(length: categoryDocuments.length, vsync: this);
-          return Obx(() {
-            if (homeController.isConnected.value) {
-              return Column(
-                children: [
-                  buildTabBar(categoryDocuments),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: Obx(
-                      () => IndexedStack(
-                        index: homeController.tabIndex.value,
-                        children: categoryDocuments.map((doc) {
-                          return CategoryView(
-                            categoryname: doc['name'],
-                            documents: categoryData[doc['name']] ?? [],
-                          );
-                        }).toList(),
+    return FutureBuilder<void>(
+      future: _initializeCategoryStream(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: buildAppBar(),
+            body: Center(child: spinKit()),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            appBar: buildAppBar(),
+            body: const Center(child: Text("Error loading categories")),
+          );
+        } else {
+          return DefaultTabController(
+            length: categoryDocuments.length,
+            child: Scaffold(
+              appBar: buildAppBar(),
+              body: Obx(() {
+                if (homeController.isConnected.value) {
+                  return Column(
+                    children: [
+                      buildTabBar(categoryDocuments),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: Obx(
+                          () => IndexedStack(
+                            index: homeController.tabIndex.value,
+                            children: categoryDocuments.map((doc) {
+                              return CategoryView(
+                                categoryname: doc['name'],
+                                documents: categoryData[doc['name']] ?? [],
+                                loadMore: () => _loadCategoryData(doc['name']),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
-              );
-            } else {
-              return buildNoInternetWidget(onTap: retryConnection);
-            }
-          });
-        },
-      ),
+                    ],
+                  );
+                } else {
+                  return buildNoInternetWidget(onTap: retryConnection);
+                }
+              }),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -121,7 +140,6 @@ class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
       dividerColor: AppColors.white,
       tabAlignment: TabAlignment.start,
       padding: EdgeInsets.zero,
-      controller: tabController,
       overlayColor: MaterialStateProperty.all(Colors.transparent),
       unselectedLabelStyle:
           const TextStyle(fontSize: 16, fontFamily: Fonts.gilroyRegular),
