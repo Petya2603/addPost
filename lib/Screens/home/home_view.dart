@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../Config/cards/audio_player_card.dart';
 import '../../Config/constants/constants.dart';
 
 class HomeView extends StatefulWidget {
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
   final HomeController homeController = Get.put(HomeController());
   List<QueryDocumentSnapshot<Map<String, dynamic>>> categoryDocuments = [];
   Map<String, List<DocumentSnapshot>> categoryData = {};
-  final int _limit = 7; 
+  final int _limit = 10;
   final Map<String, DocumentSnapshot?> _lastDocuments = {};
 
   @override
@@ -134,6 +135,7 @@ class _HomeScreenState extends State<HomeView> with TickerProviderStateMixin {
       List<QueryDocumentSnapshot<Map<String, dynamic>>> categoryDocs) {
     return TabBar(
       onTap: (index) {
+        AudioManager.pauseAll();
         homeController.changeTab(index);
       },
       isScrollable: true,

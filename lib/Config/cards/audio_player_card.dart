@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:addpost/Config/constants/widgets.dart';
-import 'package:addpost/Config/dialog/audio_download_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../Screens/category/controller/audio_controller.dart';
 import '../../config/constants/constants.dart';
-
 
 class AudioCard extends StatefulWidget {
   final String audioUrl;
@@ -50,6 +48,7 @@ class _AudioCardState extends State<AudioCard> {
 
   @override
   void dispose() {
+    audioController.stopAudio();
     AudioManager.unregisterController(audioController);
     Get.delete<AudioController>(tag: widget.index.toString());
     super.dispose();
@@ -154,7 +153,6 @@ class _AudioCardState extends State<AudioCard> {
       showSnackBar("Done", "Аудио загружено на", AppColors.grey1);
     } catch (e) {
       showSnackBar("Error", "Error: $e", AppColors.grey1);
-      print(e);
     } finally {
       isDownloading.value = false;
       downloadProgress.value = 0.0;
@@ -315,24 +313,29 @@ class AudioManager {
   }
 
   static Future<void> playPauseAudio(String audioUrl, int index) async {
-    for (var controller in _audioControllers) {
-      if (controller.audioUrl == audioUrl) {
-        if (controller.isPlaying.value) {
-          await controller.audioPlayer.pause();
-        } else {
-          await controller.audioPlayer.resume();
-        }
-      } else {
-        await controller.audioPlayer.pause();
-      }
-    }
-
     final currentController = Get.find<AudioController>(tag: index.toString());
-    if (currentController.isPlaying.value) {
-      await currentController.audioPlayer.pause();
+
+    if (currentController.audioUrl == audioUrl) {
+      if (currentController.isPlaying.value) {
+        await currentController.audioPlayer.pause();
+      } else {
+        await currentController.audioPlayer.resume();
+      }
     } else {
+      await currentController.audioPlayer.pause();
       await currentController.audioPlayer.setSourceUrl(audioUrl);
       await currentController.audioPlayer.resume();
+    }
+
+    currentController.audioPlayer.onPlayerComplete.listen((event) {
+      currentController.isPlaying.value = false;
+      currentController.position.value = Duration.zero;
+    });
+  }
+
+  static Future<void> pauseAll() async {
+    for (var controller in _audioControllers) {
+      await controller.audioPlayer.pause();
     }
   }
 }

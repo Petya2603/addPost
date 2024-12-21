@@ -13,6 +13,7 @@ import '../../Screens/category/components/video_view_page.dart';
 import '../constants/constants.dart';
 
 class VideoCard extends StatefulWidget {
+  
   final String videoUrl;
   final String text;
   final String time;

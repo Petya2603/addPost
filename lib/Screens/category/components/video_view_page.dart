@@ -36,7 +36,7 @@ class _VideoViewPageState extends State<VideoViewPage> {
     await videoController.videoPlayerController.initialize().then((_) {
       videoController.isVideoInitialized.value = true;
       videoController.videoPlayerController.play();
-      videoController.isVideoPlaying.value = true; // Update play button state
+      videoController.isVideoPlaying.value = true; 
     }).catchError((error) {
       videoController.isVideoInitialized.value = false;
     });
